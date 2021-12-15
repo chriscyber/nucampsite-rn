@@ -1,33 +1,41 @@
 import React, { Component } from 'react';
 import Directory from './DirectoryComponent';
 import CampsiteInfo from './CampsiteInfoComponent';
-import { View } from 'react-native';
-import { CAMPSITES } from '../shared/campsites';
+import Constants from 'expo-constants';
+import { View, Platform } from 'react-native';
+import { createStackNavigator } from 'react-navigation-stack';
+import { createAppContainer } from 'react-navigation';
+
+const DirectoryNavigator = createStackNavigator( //set which components are available to the stack. 
+    {
+        Directory: { screen: Directory }, // all screens have navigation prop (see documentation).  Here, Directory component receives all navigation props.
+        CampsiteInfo: { screen: CampsiteInfo }
+    }, 
+    {
+        initialRouteName: 'Directory',
+        defaultNavigationOptions: {
+            headerStyle: {
+                backgroundColor: '#5637DD'
+            },
+            headerTintColor: '#fff',
+            headerTitleStyle: {
+                color: '#fff'
+            }
+        }
+    }
+);
+
+const AppNavigator = createAppContainer(DirectoryNavigator); //returns react component that handles connecting top level navigator to  native environment, like native back button. Usually wraps top level navigator.
 
 class Main extends Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            campsites: CAMPSITES,
-            selectedCampsite: null //to keep track of which campsite has been selected, which one to tell CampsiteInfo Component to display
-        };
-    }
-
-    onCampsiteSelect(campsiteId) {
-        this.setState({selectedCampsite: campsiteId}); //state managed by React Native not redux yet
-    }
-
     render() {
         return (
-            <View style={{flex: 1}}> 
-                <Directory 
-                    campsites={this.state.campsites}
-                    onPress={campsiteId => this.onCampsiteSelect(campsiteId)} //passing onCampsiteSelect method to Directory component to be called there.
-                />
-                <CampsiteInfo
-                    campsite={this.state.campsites.filter(campsite => campsite.id === this.state.selectedCampsite)[0]}
-                    //match selected campsite to list of campsites to render whole campsite object and props. Filter return an array, but we need the object so [0] grabs first item in array of objects. 
-                />
+            <View
+                style={{
+                    flex: 1,
+                    paddingTop: Platform.OS === 'ios' ? 0 : Constants.statusBarHeight //adjustment for ios difference in padding style, sdk. 
+            }}>
+                <AppNavigator />
             </View>
         );
     }

@@ -1,15 +1,17 @@
-import React from 'react';
+import React, { Component } from 'react';
 import { Text, View } from 'react-native';
 import { Card } from 'react-native-elements';
+import { CAMPSITES } from '../shared/campsites';
 
 function RenderCampsite({campsite}) { //destructured campsite prop from campsite object
+
     if (campsite) {
         return (
-            <Card 
+            <Card
                 featuredTitle={campsite.name}
                 image={require('./images/react-lake.jpg')}
             >
-                <Text style={{margin: 10}}> {/*style similar to CSS but is JS */}
+                <Text style={{margin: 10}}>
                     {campsite.description}
                 </Text>
             </Card>
@@ -18,8 +20,24 @@ function RenderCampsite({campsite}) { //destructured campsite prop from campsite
     return <View />; //we have to return something, so if card invalid, return empty view.
 }
 
-function CampsiteInfo(props) {
-    return <RenderCampsite campsite={props.campsite} />; //campsite object to RenderCampsite component
+class CampsiteInfo extends Component {
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            campsites: CAMPSITES
+        };
+    }
+
+    static navigationOptions = {
+        title: 'Campsite Information'
+    }
+
+    render() {
+        const campsiteId = this.props.navigation.getParam('campsiteId');
+        const campsite = this.state.campsites.filter(campsite => campsite.id === campsiteId)[0];
+        return <RenderCampsite campsite={campsite} />;  //campsite object from above (not props) to RenderCampsite component
+    }
 }
 
 export default CampsiteInfo;
