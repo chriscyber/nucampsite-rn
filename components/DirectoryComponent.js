@@ -9,6 +9,7 @@ function Directory(props) {
             <ListItem
                 title={item.name}
                 subtitle={item.description}
+                onPress={() => props.onPress(item.id)} //ListItem comes with built in onPress prop. When this component pressed, this function will fire. event handler is also called onPress in Main
                 leftAvatar={{ source: require('./images/react-lake.jpg')}}
             />
         );
