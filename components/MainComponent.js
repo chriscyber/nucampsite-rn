@@ -18,6 +18,21 @@ import { createDrawerNavigator, DrawerItems } from "react-navigation-drawer";
 import { createAppContainer } from "react-navigation";
 import { Icon } from "react-native-elements";
 import SafeAreaView from "react-native-safe-area-view"; // for iphone X to not put anything in area where hardware jets out onto viewport
+import { connect } from "react-redux";
+import {
+  fetchCampsites,
+  fetchComments,
+  fetchPromotions,
+  fetchPartners,
+} from "../redux/ActionCreators";
+
+const mapDispatchToProps = {
+  // allows us access to Action Creators as props
+  fetchCampsites,
+  fetchComments,
+  fetchPromotions,
+  fetchPartners,
+};
 
 const DirectoryNavigator = createStackNavigator(
   //set which components are available to the stack.
@@ -214,6 +229,14 @@ export const MainComponent = () => {
 const AppNavigator = createAppContainer(MainNavigator); //returns react component that handles connecting top level navigator to  native environment, like native back button. Usually wraps top level navigator.
 
 class Main extends Component {
+  //call Action creators after component created
+  componentDidMount() {
+    this.props.fetchCampsites();
+    this.props.fetchComments();
+    this.props.fetchPromotions();
+    this.props.fetchPartners();
+  }
+
   render() {
     return (
       <View
@@ -257,4 +280,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Main;
+export default connect(null, mapDispatchToProps)(Main);

@@ -1,7 +1,9 @@
+//reducers act like event listeners
+
 import * as ActionTypes from "./ActionTypes";
 
 export const campsites = (
-  state = { isLoading: true, errMess: null, campsites: [] },
+  state = { isLoading: true, errMess: null, campsites: [] }, //initialization if not already initialized
   action
 ) => {
   switch (action.type) {
