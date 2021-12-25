@@ -159,3 +159,15 @@ export const addPartners = (partners) => ({
   type: ActionTypes.ADD_PARTNERS,
   payload: partners,
 });
+
+export const postFavorite = (campsiteId) => (dispatch) => {
+  setTimeout(() => {
+    //to sim server delay
+    dispatch(addFavorite(campsiteId));
+  }, 2000);
+};
+
+export const addFavorite = (campsiteId) => ({
+  type: ActionTypes.ADD_FAVORITE,
+  payload: campsiteId,
+});

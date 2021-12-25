@@ -1,9 +1,9 @@
 import React, { Component } from "react";
-import { Text } from "react-native";
+import { Text, ScrollView, FlatList } from "react-native";
 import { ListItem, Card } from "react-native-elements";
-import { FlatList, ScrollView } from "react-native-gesture-handler";
 import { connect } from "react-redux";
 import { baseUrl } from "../shared/baseUrl";
+import Loading from "./Loading";
 
 const mapStateToProps = (state) => {
   // state as props defines here. will be passed in connect later
@@ -44,6 +44,28 @@ class About extends Component {
         />
       );
     };
+
+    if (this.props.partners.isLoading) {
+      return (
+        <ScrollView>
+          <Mission />
+          <Card title="Community Partners">
+            <Loading />
+          </Card>
+        </ScrollView>
+      );
+    }
+
+    if (this.props.partners.errMess) {
+      return (
+        <ScrollView>
+          <Mission />
+          <Card title="Community Partners">
+            <Text>{this.props.partners.errMess}</Text>
+          </Card>
+        </ScrollView>
+      );
+    }
 
     return (
       <ScrollView>
