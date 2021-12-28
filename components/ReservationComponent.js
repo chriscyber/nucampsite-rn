@@ -7,6 +7,7 @@ import {
   Picker,
   Switch,
   Button,
+  Modal,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker"; //scoped package syntax
 
@@ -21,6 +22,7 @@ class Reservation extends Component {
       hikeIn: false,
       date: new Date(),
       showCalendar: false,
+      showModal: false,
     };
   }
 
@@ -28,13 +30,22 @@ class Reservation extends Component {
     title: "Reserve Campsite",
   };
 
+  toggleModal() {
+    this.setState({ showModal: !this.state.showModal });
+  }
+
   handleReservation() {
     console.log(JSON.stringify(this.state));
+    this.toggleModal();
+  }
+
+  resetForm() {
     this.setState({
       campers: 1,
       hikeIn: false,
       date: new Date(),
       showCalendar: false,
+      showModal: false,
     });
   }
 
@@ -47,6 +58,7 @@ class Reservation extends Component {
             style={styles.formItem}
             selectedValue={this.state.campers} //built in prop
             onValueChange={(itemValue) => this.setState({ campers: itemValue })} //built in prop
+            prompt="How many campers are in your party?"
           >
             <Picker.Item label="1" value="1" />
             <Picker.Item label="2" value="2" />
@@ -63,6 +75,7 @@ class Reservation extends Component {
             value={this.state.hikeIn}
             trackColor={{ true: "#5637DD", false: null }}
             onValueChange={(value) => this.setState({ hikeIn: value })}
+            thumbColor="darkgrey"
           />
         </View>
         <View style={styles.formRow}>
@@ -91,11 +104,38 @@ class Reservation extends Component {
         <View style={styles.formRow}>
           <Button
             onPress={() => this.handleReservation()}
-            title="Search"
+            title="Search Availability"
             color="#5637DD"
             accessibilityLabel="Tap me to search for available campsites to reserve"
           />
         </View>
+        <Modal
+          animationType={"slide"}
+          transparent={false}
+          visible={this.state.showModal} //boolean based on showModal boolean value
+          onRequestClose={() => this.toggleModal()} //browser/hardware back button
+        >
+          <View style={styles.modal}>
+            <Text style={styles.modalTitle}>Search Campsite Reservations</Text>
+            <Text style={styles.modalText}>
+              Number of Campers: {this.state.campers}
+            </Text>
+            <Text style={styles.modalText}>
+              Hike-In?: {this.state.hikeIn ? "Yes" : "No"}
+            </Text>
+            <Text style={styles.modalText}>
+              Date: {this.state.date.toLocaleDateString("en-US")}
+            </Text>
+            <Button
+              onPress={() => {
+                this.toggleModal();
+                this.resetForm();
+              }}
+              color="#5637DD"
+              title="Close"
+            />
+          </View>
+        </Modal>
       </ScrollView>
     );
   }
@@ -115,6 +155,22 @@ const styles = StyleSheet.create({
   },
   formItem: {
     flex: 1,
+  },
+  modal: {
+    justifyContent: "center",
+    margin: 20,
+  },
+  modalTitle: {
+    fontSize: 24,
+    fontWeight: "bold",
+    backgroundColor: "#5637DD",
+    textAlign: "center",
+    color: "#fff",
+    marginBottom: 20,
+  },
+  modalText: {
+    fontSize: 18,
+    margin: 10,
   },
 });
 
