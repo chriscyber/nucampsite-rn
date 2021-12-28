@@ -5,6 +5,7 @@ import CampsiteInfo from "./CampsiteInfoComponent";
 import About from "./AboutComponent";
 import Contact from "./ContactComponent";
 import Reservation from "./ReservationComponent";
+import Favorites from "./FavoritesComponent";
 import Constants from "expo-constants";
 import {
   View,
@@ -167,7 +168,7 @@ const ReservationNavigator = createStackNavigator(
     }),
   }
 );
-/*
+
 const FavoritesNavigator = createStackNavigator(
   {
     Favorites: { screen: Favorites },
@@ -192,7 +193,7 @@ const FavoritesNavigator = createStackNavigator(
     }),
   }
 );
-*/
+
 const CustomDrawerContentComponent = (props) => (
   <ScrollView>
     <SafeAreaView
@@ -247,7 +248,7 @@ const MainNavigator = createDrawerNavigator(
         ),
       },
     },
-    /*
+
     Favorites: {
       screen: FavoritesNavigator,
       navigationOptions: {
@@ -257,7 +258,7 @@ const MainNavigator = createDrawerNavigator(
         ),
       },
     },
-    */
+
     About: {
       screen: AboutNavigator,
       navigationOptions: {
