@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, ScrollView } from "react-native";
+import { View, Text, Animated } from "react-native";
 import { Card } from "react-native-elements";
 import { connect } from "react-redux";
 import { baseUrl } from "../shared/baseUrl";
@@ -39,6 +39,28 @@ function RenderItem(props) {
 }
 
 class Home extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      scaleValue: new Animated.Value(0), //this state value controls scale of component
+    };
+  }
+
+  animate() {
+    Animated.timing(
+      this.state.scaleValue, //name of value changing over time
+      {
+        toValue: 1, //100% of scale
+        duration: 1500,
+        useNativeDriver: true, //improves performance
+      }
+    ).start();
+  }
+
+  componentDidMount() {
+    this.animate();
+  }
+
   static navigationOptions = {
     title: "Home", //setup Home screen
   };
@@ -46,7 +68,9 @@ class Home extends Component {
   render() {
     return (
       //scrollview to render lists or groups like flatlist. scrollview renders all at once. flatlist renders only those that will fit on screen.
-      <ScrollView>
+      <Animated.ScrollView
+        style={{ transform: [{ scale: this.state.scaleValue }] }}
+      >
         <RenderItem
           item={
             this.props.campsites.campsites.filter(
@@ -74,7 +98,7 @@ class Home extends Component {
           isLoading={this.props.partners.isLoading}
           errMess={this.props.partners.errMess}
         />
-      </ScrollView>
+      </Animated.ScrollView>
     );
   }
 }
