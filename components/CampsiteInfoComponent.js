@@ -7,6 +7,8 @@ import {
   Modal,
   Button,
   StyleSheet,
+  Alert,
+  PanResponder,
 } from "react-native";
 import { Card, Icon, Input, Rating } from "react-native-elements";
 import { connect } from "react-redux";
@@ -15,7 +17,7 @@ import { postFavorite, postComment } from "../redux/ActionCreators";
 import * as Animatable from "react-native-animatable";
 
 const mapStateToProps = (state) => {
-  // state as props defines here. will be passed in connect later
+  // state as props defined here. will be passed in connect later
   return {
     campsites: state.campsites,
     comments: state.comments,
@@ -31,11 +33,49 @@ const mapDispatchToProps = {
 };
 
 function RenderCampsite(props) {
-  //destructured campsite prop from campsite object
+
   const { campsite } = props;
+
+  const recognizeDrag = ({ dx }) => (dx < -200) ? true : false;
+
+  const panResponder = PanResponder.create({
+    onStartShouldSetPanResponder: () => true,
+    onPanResponderEnd: (e, gestureState) => {
+      console.log("pan responder end", gestureState);
+      if (recognizeDrag(gestureState)) {
+        Alert.alert(
+          "Add Favorite",
+          "Are you sure you wish to add " + campsite.name + " to favorites?",
+          [
+            {
+              text: "Cancel",
+              style: "cancel",
+              onPress: () => console.log("Cancel Pressed"),
+            },
+            {
+              text: "OK",
+              onPress: () =>
+                props.favorite
+                  ? console.log("Already set as a favorite")
+                  : props.markFavorite(),
+            },
+          ],
+          { cancelable: false }
+        );
+      }
+      return true; //turns on the panResponder and event handler
+    },
+  });
+
+  //destructured campsite prop from campsite object 
   if (campsite) {
     return (
-      <Animatable.View animation="fadeInDown" duration={2000} delay={1000}>
+      <Animatable.View
+        animation="fadeInDown"
+        duration={2000}
+        delay={1000}
+        {...PanResponder.panHandlers} //spread out responders and combine into 1 handler and pass in as one object
+      >
         <Card
           featuredTitle={campsite.name}
           image={{ uri: baseUrl + campsite.image }}
