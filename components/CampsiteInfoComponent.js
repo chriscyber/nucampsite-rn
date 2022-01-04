@@ -33,18 +33,23 @@ const mapDispatchToProps = {
 };
 
 function RenderCampsite(props) {
-
   const { campsite } = props;
 
   const view = React.createRef(); //see ref prop in view below, and view in onPanResponderGrant
 
-  const recognizeDrag = ({ dx }) => (dx < -200) ? true : false;
+  const recognizeDrag = ({ dx }) => (dx < -200 ? true : false); //plain function in function
+
+  const recognizeComment = ({ dx }) => (dx > 200 ? true : false);
 
   const panResponder = PanResponder.create({
     onStartShouldSetPanResponder: () => true,
-    onPanResponderGrant: () => { //upon starting gesture
-      view.current.rubberBand(1000) //returns a promise that animation finished. current refers to currently mounted instance of component
-      .then(endState => console.log(endState.finished ? 'finished' : 'canceled'));
+    onPanResponderGrant: () => {
+      //upon starting gesture
+      view.current
+        .rubberBand(1000) //returns a promise that animation finished. current refers to currently mounted instance of component
+        .then((endState) =>
+          console.log(endState.finished ? "finished" : "canceled")
+        );
     },
     onPanResponderEnd: (e, gestureState) => {
       console.log("pan responder end", gestureState);
@@ -68,12 +73,14 @@ function RenderCampsite(props) {
           ],
           { cancelable: false }
         );
+      } else if (recognizeComment(gestureState)) {
+        props.onShowModal();
       }
       return true; //turns on the panResponder and event handler
     },
   });
 
-  //destructured campsite prop from campsite object 
+  //destructured campsite prop from campsite object
   if (campsite) {
     return (
       <Animatable.View
@@ -81,7 +88,7 @@ function RenderCampsite(props) {
         duration={2000}
         delay={1000}
         ref={view}
-        {...PanResponder.panHandlers} //spread out responders and combine into 1 handler and pass in as one object
+        {...panResponder.panHandlers} //spread out responders and combine into 1 handler and pass in as one object
       >
         <Card
           featuredTitle={campsite.name}
