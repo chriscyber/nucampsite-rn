@@ -11,6 +11,7 @@ import {
   Alert,
 } from "react-native";
 import DateTimePicker from "@react-native-community/datetimepicker"; //scoped package syntax
+import * as Notifications from "expo-notifications";
 
 //controlled form - state maintained in component
 
@@ -45,7 +46,12 @@ class Reservation extends Component {
         },
         {
           text: "OK",
-          onPress: () => this.resetForm(),
+          onPress: () => {
+            this.presentLocalNotification(
+              this.state.date.toLocaleDateString("en-US")
+            );
+            this.resetForm();
+          },
         },
       ]
     );
@@ -58,6 +64,35 @@ class Reservation extends Component {
       date: new Date(),
       showCalendar: false,
     });
+  }
+
+  async presentLocalNotification(date) {
+    // async await ES8. async always returns a promise
+    function sendNotification() {
+      //inner function to call when ready
+      Notifications.setNotificationHandler({
+        handleNotification: async () => ({
+          shouldShowAlert: true,
+        }),
+      });
+
+      Notifications.scheduleNotificationAsync({
+        content: {
+          title: "Your Campsite Reservation Search",
+          body: `Search for ${date} requested`,
+        },
+        trigger: null, //fire notification to trigger immediately
+      });
+    }
+
+    let permissions = await Notifications.getPermissionsAsync(); // await can only by used inside async function. similar to then method. result of await function gets assigned to permissions variable.
+    if (!permissions.granted) {
+      //check if already have permissions to use notifications from OS
+      permissions = await Notifications.requestPermissionsAsync();
+    }
+    if (permissions.granted) {
+      sendNotification();
+    }
   }
 
   render() {
