@@ -31,7 +31,7 @@ class Contact extends Component {
             </Text>
             <Text>Phone: 1-206-555-1234</Text>
             <Text>Email: campsites@nucamp.co</Text>
-            <Button
+            <Button // React Native Element (RNE) button
               title="Send Email"
               buttonStyle={{ backgroundColor: "#5637DD", margin: 40 }}
               icon={
