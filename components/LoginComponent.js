@@ -22,8 +22,10 @@ class Login extends Component {
     console.log(JSON.stringify(this.state));
     if (this.state.remember) {
       SecureStore.setItemAsync(
-        "userinfo",
+        //returns a promise that rejects if value can't be stored on device
+        "userinfo", // key
         JSON.stringify({
+          //value as JSON object w/ 2048 bytes limit
           username: this.state.username,
           password: this.state.password,
         })
@@ -36,8 +38,9 @@ class Login extends Component {
   }
 
   componentDidMount() {
+    // user info retrievable after component mounts
     SecureStore.getItemAsync("userinfo").then((userdata) => {
-      const userinfo = JSON.parse(userdata);
+      const userinfo = JSON.parse(userdata); // convert back to js object to store in userdata variable
       if (userinfo) {
         this.setState({ username: userinfo.username });
         this.setState({ password: userinfo.password });
